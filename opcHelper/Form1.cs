@@ -28,7 +28,7 @@ namespace opcHelper
             // 创建 OPC Server 对象
             server = new OPCServer();
             // 连接到本地的 OPC 服务器
-            string serverName = textBox1.Text; // 替换为实际的 OPC Server 名称
+            string serverName = comboBox1.SelectedItem.ToString(); // 替换为实际的 OPC Server 名称
             server.Connect(serverName, textBox2.Text);
 
             Console.WriteLine("成功连接到 OPC Server: " + server.ServerName);
@@ -44,7 +44,8 @@ namespace opcHelper
             // 添加一个 Item 到 Group
             OPCItems items = group.OPCItems;
             item = items.AddItem(textBox3.Text, 1); // 替换为实际的 Tag 名称
-
+           
+           
             Console.WriteLine("成功添加 OPC Item: " + item.ItemID);
 
             timer1.Start();
@@ -68,6 +69,23 @@ namespace opcHelper
             // 清理资源
             server.Disconnect();
             Console.WriteLine("已断开与 OPC Server 的连接");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            OPCServer server = new OPCServer();
+            object servers = server.GetOPCServers(textBox2.Text);
+            Array serverArray = (Array)servers;
+            string[] serverNames = new string[serverArray.Length];
+            for (int i = 0; i < serverArray.Length; i++)
+            {
+                serverNames[i] = (string)serverArray.GetValue(i + 1);
+            }
+            foreach (var item in serverNames)
+            {
+               comboBox1.Items.Add(item);
+            }
+            if (comboBox1.Items.Count > 0) { comboBox1.SelectedIndex = 0; }
         }
     }
 
